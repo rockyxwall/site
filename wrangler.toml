@@ -1,5 +1,6 @@
-name = "rockyxwall-portfolio"
+name = "site"
 compatibility_date = "2024-01-01"
+main = "dist/_worker.js/index.js"
 
 [assets]
 directory = "./dist"
