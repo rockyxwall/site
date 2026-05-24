@@ -1,0 +1,24 @@
+---
+const currentYear = new Date().getFullYear();
+---
+
+<footer class="border-t border-[var(--border)] py-12 mt-20">
+  <div class="max-w-5xl mx-auto px-6">
+    <div class="flex flex-col md:flex-row justify-between items-center gap-8">
+      <div class="text-[var(--text-secondary)] text-sm">
+        <p>Built with Astro + Obsidian · Hosted on Cloudflare</p>
+      </div>
+      
+      <div class="flex gap-6 text-sm font-mono uppercase tracking-wider">
+        <a href="https://github.com" class="hover:text-accent transition-colors">GitHub</a>
+        <a href="https://youtube.com" class="hover:text-accent transition-colors">YouTube</a>
+        <a href="https://twitter.com" class="hover:text-accent transition-colors">Twitter/X</a>
+      </div>
+    </div>
+    
+    <div class="mt-8 pt-8 border-t border-[var(--border)] flex justify-between items-center text-[var(--text-muted)] text-xs mono">
+      <p>© {currentYear} Rocky X Wall</p>
+      <p>v1.0.0</p>
+    </div>
+  </div>
+</footer>

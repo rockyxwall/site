@@ -1,0 +1,47 @@
+---
+import Tag from './Tag.astro';
+
+interface Props {
+  title: string;
+  description: string;
+  date: Date;
+  tags: string[];
+  slug: string;
+  readingTime?: number;
+}
+
+const { title, description, date, tags, slug, readingTime } = Astro.props;
+
+const formattedDate = date.toLocaleDateString('en-US', {
+  year: 'numeric',
+  month: 'short',
+  day: 'numeric',
+});
+---
+
+<article class="group py-8 border-b border-[var(--border)] last:border-0">
+  <div class="flex flex-col md:flex-row md:items-baseline gap-2 md:gap-6 mb-2">
+    <time class="mono text-[var(--text-muted)] text-xs uppercase tracking-widest min-w-[100px]">
+      {formattedDate}
+    </time>
+    
+    <div class="flex-1">
+      <a href={`/blog/${slug}`} class="block">
+        <h3 class="text-xl font-medium group-hover:text-accent transition-colors inline-block">{title}</h3>
+      </a>
+    </div>
+
+    {readingTime && (
+      <span class="mono text-[var(--text-muted)] text-[10px] uppercase">
+        {readingTime} min read
+      </span>
+    )}
+  </div>
+
+  <div class="md:pl-[124px]">
+    <p class="text-[var(--text-secondary)] text-sm mb-4 max-w-2xl">{description}</p>
+    <div class="flex flex-wrap gap-2">
+      {tags.map(tag => <Tag name={tag} />)}
+    </div>
+  </div>
+</article>

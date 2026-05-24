@@ -1,0 +1,40 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import YouTubeCard from '../components/YouTubeCard.astro';
+import { getLatestVideos } from '../lib/youtube.ts';
+
+const videos = await getLatestVideos(12);
+---
+
+<BaseLayout title="Videos" description="My latest YouTube videos on web development and productivity.">
+  <div class="mb-12">
+    <p class="mono text-accent text-xs uppercase tracking-widest mb-4">Media</p>
+    <h1 class="text-4xl font-bold mb-4">Videos</h1>
+    <p class="text-[var(--text-secondary)] max-w-2xl">
+      I share tutorials, deep-dives into new technologies, and a look behind the scenes of my projects on YouTube.
+    </p>
+  </div>
+
+  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+    {videos.map(video => (
+      <YouTubeCard 
+        title={video.title}
+        thumbnail={video.thumbnail}
+        videoId={video.id}
+        publishedAt={video.publishedAt}
+      />
+    ))}
+  </div>
+
+  <div class="mt-16 py-12 border-t border-[var(--border)] text-center">
+    <p class="text-[var(--text-secondary)] mb-6">Want to see more?</p>
+    <a 
+      href="https://youtube.com" 
+      target="_blank" 
+      rel="noopener noreferrer" 
+      class="px-8 py-4 bg-accent text-white font-medium rounded-[var(--radius)] hover:bg-accent-hover transition-colors inline-block"
+    >
+      Visit My YouTube Channel
+    </a>
+  </div>
+</BaseLayout>

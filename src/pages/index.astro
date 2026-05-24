@@ -1,0 +1,134 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import ProjectCard from '../components/ProjectCard.astro';
+import BlogCard from '../components/BlogCard.astro';
+import YouTubeCard from '../components/YouTubeCard.astro';
+import { getLatestVideos } from '../lib/youtube.ts';
+
+const featuredProjects = await getCollection('projects', ({ data }) => {
+  return data.featured === true;
+});
+
+const latestPosts = (await getCollection('blog', ({ data }) => {
+  return data.draft !== true;
+}))
+  .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf())
+  .slice(0, 3);
+
+const latestVideos = await getLatestVideos(3);
+---
+
+<BaseLayout title="Home" description="Software Developer Portfolio & Blog">
+  <!-- Hero Section -->
+  <section class="grid grid-cols-1 md:grid-cols-10 gap-12 items-center mb-24 py-12">
+    <div class="md:col-span-6">
+      <p class="mono text-accent text-xs uppercase tracking-widest mb-4">Software Developer</p>
+      <h1 class="text-5xl md:text-7xl font-bold mb-6 tracking-tight">
+        Rocky X Wall<span class="text-accent animate-pulse">_</span>
+      </h1>
+      <p class="text-xl text-[var(--text-secondary)] mb-10 max-w-lg leading-relaxed">
+        Building high-performance web applications and sharing my journey through code, writing, and video.
+      </p>
+      <div class="flex flex-wrap gap-4">
+        <a href="/projects" class="px-6 py-3 bg-accent text-white font-medium rounded-[var(--radius)] hover:bg-accent-hover transition-colors">
+          View Projects
+        </a>
+        <a href="/blog" class="px-6 py-3 border border-[var(--border)] text-[var(--text-primary)] font-medium rounded-[var(--radius)] hover:bg-[var(--bg-hover)] transition-colors">
+          Read Blog
+        </a>
+      </div>
+    </div>
+
+    <div class="md:col-span-4">
+      <div class="bg-[var(--bg-card)] border border-[var(--border)] rounded-[var(--radius)] overflow-hidden font-mono text-xs shadow-2xl">
+        <div class="bg-[var(--bg-secondary)] px-4 py-2 border-b border-[var(--border)] flex items-center justify-between">
+          <div class="flex gap-1.5">
+            <div class="w-2.5 h-2.5 rounded-full bg-[#ff5f56]"></div>
+            <div class="w-2.5 h-2.5 rounded-full bg-[#ffbd2e]"></div>
+            <div class="w-2.5 h-2.5 rounded-full bg-[#27c93f]"></div>
+          </div>
+          <span class="text-[var(--text-muted)]">zsh</span>
+        </div>
+        <div class="p-6 space-y-4">
+          <div>
+            <span class="text-accent">❯</span> whoami
+            <p class="text-[var(--text-secondary)] mt-1">rockyxwall</p>
+          </div>
+          <div>
+            <span class="text-accent">❯</span> stack --list
+            <p class="text-[var(--text-secondary)] mt-1">Astro, TypeScript, Tailwind, Cloudflare</p>
+          </div>
+          <div>
+            <span class="text-accent">❯</span> location
+            <p class="text-[var(--text-secondary)] mt-1">Earth (mostly)</p>
+          </div>
+          <div>
+            <span class="text-accent">❯</span> status
+            <p class="text-[var(--text-secondary)] mt-1 flex items-center gap-2">
+              <span class="w-2 h-2 rounded-full bg-[#27c93f] animate-pulse"></span>
+              Available for hire
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Featured Projects -->
+  <section class="mb-24">
+    <div class="flex items-center justify-between mb-8">
+      <h2 class="text-2xl font-bold">Featured Projects</h2>
+      <a href="/projects" class="text-sm text-accent hover:underline mono uppercase tracking-widest">All Projects →</a>
+    </div>
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+      {featuredProjects.map(project => (
+        <ProjectCard 
+          title={project.data.title}
+          description={project.data.description}
+          tags={project.data.tags}
+          github={project.data.github}
+          live={project.data.live}
+          slug={project.id.replace(/\.[^/.]+$/, '')}
+        />
+      ))}
+    </div>
+  </section>
+
+  <!-- Latest Posts -->
+  <section class="mb-24">
+    <div class="flex items-center justify-between mb-8">
+      <h2 class="text-2xl font-bold">Latest Posts</h2>
+      <a href="/blog" class="text-sm text-accent hover:underline mono uppercase tracking-widest">All Posts →</a>
+    </div>
+    <div class="divide-y divide-[var(--border)]">
+      {latestPosts.map(post => (
+        <BlogCard 
+          title={post.data.title}
+          description={post.data.description}
+          date={post.data.date}
+          tags={post.data.tags}
+          slug={post.id.replace(/\.[^/.]+$/, '')}
+        />
+      ))}
+    </div>
+  </section>
+
+  <!-- YouTube Latest -->
+  <section>
+    <div class="flex items-center justify-between mb-8">
+      <h2 class="text-2xl font-bold">Latest on YouTube</h2>
+      <a href="/youtube" class="text-sm text-accent hover:underline mono uppercase tracking-widest">Full Channel →</a>
+    </div>
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+      {latestVideos.map(video => (
+        <YouTubeCard 
+          title={video.title}
+          thumbnail={video.thumbnail}
+          videoId={video.id}
+          publishedAt={video.publishedAt}
+        />
+      ))}
+    </div>
+  </section>
+</BaseLayout>

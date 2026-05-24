@@ -1,0 +1,10 @@
+node_modules
+.DS_Store
+dist
+.astro
+.env
+.wrangler
+package-lock.json
+
+# Obsidian vault config - keep it
+!src/content/.obsidian/

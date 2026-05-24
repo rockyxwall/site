@@ -1,0 +1,64 @@
+---
+import BaseLayout from './BaseLayout.astro';
+import Tag from '../components/Tag.astro';
+
+const { frontmatter, content } = Astro.props;
+const { title, description, date, tags } = frontmatter;
+
+const formattedDate = new Date(date).toLocaleDateString('en-US', {
+  year: 'numeric',
+  month: 'long',
+  day: 'numeric',
+});
+
+// Calculate reading time
+const words = content ? content.split(/\s+/).length : 0;
+const readingTime = Math.ceil(words / 200);
+---
+
+<BaseLayout title={title} description={description}>
+  <article class="max-w-3xl mx-auto">
+    <header class="mb-12">
+      <div class="flex items-center gap-4 mb-6">
+        <time class="mono text-[var(--text-muted)] text-xs uppercase tracking-widest">
+          {formattedDate}
+        </time>
+        <span class="mono text-[var(--text-muted)] text-[10px] uppercase">
+          {readingTime} min read
+        </span>
+      </div>
+      
+      <h1 class="text-4xl md:text-5xl font-bold mb-6 leading-tight">
+        {title}
+      </h1>
+      
+      <div class="flex flex-wrap gap-2 mb-8">
+        {tags.map((tag: string) => <Tag name={tag} />)}
+      </div>
+
+      <p class="text-xl text-[var(--text-secondary)] leading-relaxed italic border-l-2 border-accent pl-6">
+        {description}
+      </p>
+    </header>
+
+    <div class="prose prose-invert max-w-none 
+      prose-headings:font-medium prose-headings:text-[var(--text-primary)]
+      prose-p:text-[var(--text-secondary)] prose-p:leading-relaxed
+      prose-a:text-accent prose-a:no-underline hover:prose-a:text-accent-hover
+      prose-strong:text-[var(--text-primary)]
+      prose-code:text-accent prose-code:bg-[var(--accent-dim)] prose-code:px-1 prose-code:rounded-sm prose-code:before:content-none prose-code:after:content-none
+      prose-pre:bg-[var(--bg-card)] prose-pre:border prose-pre:border-[var(--border)]
+      prose-img:rounded-[var(--radius)]
+      prose-blockquote:border-l-accent prose-blockquote:bg-[var(--bg-secondary)] prose-blockquote:py-1 prose-blockquote:px-6 prose-blockquote:rounded-r-md
+    ">
+      <slot />
+    </div>
+
+    <footer class="mt-20 pt-10 border-t border-[var(--border)]">
+      <a href="/blog" class="inline-flex items-center gap-2 text-sm text-accent hover:text-accent-hover transition-colors">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+        Back to blog
+      </a>
+    </footer>
+  </article>
+</BaseLayout>

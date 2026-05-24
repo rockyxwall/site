@@ -1,0 +1,87 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import ProjectCard from '../../components/ProjectCard.astro';
+
+const allProjects = (await getCollection('projects')).sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
+const allTags = [...new Set(allProjects.flatMap(p => p.data.tags))].sort();
+---
+
+<BaseLayout title="Projects" description="A showcase of my recent work and open-source contributions.">
+  <div class="mb-12">
+    <p class="mono text-accent text-xs uppercase tracking-widest mb-4">Portfolio</p>
+    <h1 class="text-4xl font-bold mb-4">Projects</h1>
+    <p class="text-[var(--text-secondary)] max-w-2xl mb-8">
+      A collection of tools, applications, and experiments I've built. Most of these are open source.
+    </p>
+
+    <!-- Filter -->
+    <div class="flex flex-wrap gap-2" id="tag-filters">
+      <button 
+        class="tag-filter active px-3 py-1 bg-[var(--accent-dim)] text-accent text-[10px] mono uppercase tracking-widest rounded-sm border border-accent/20 hover:border-accent/50 transition-colors"
+        data-tag="all"
+      >
+        All
+      </button>
+      {allTags.map(tag => (
+        <button 
+          class="tag-filter px-3 py-1 bg-[var(--bg-card)] text-[var(--text-secondary)] text-[10px] mono uppercase tracking-widest rounded-sm border border-[var(--border)] hover:border-accent/50 transition-colors"
+          data-tag={tag}
+        >
+          {tag}
+        </button>
+      ))}
+    </div>
+  </div>
+
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-8" id="projects-container">
+    {allProjects.map(project => (
+      <div class="project-item" data-tags={project.data.tags.join(',')}>
+        <ProjectCard 
+          title={project.data.title}
+          description={project.data.description}
+          tags={project.data.tags}
+          github={project.data.github}
+          live={project.data.live}
+          slug={project.id.replace(/\.[^/.]+$/, '')}
+        />
+      </div>
+    ))}
+  </div>
+
+  <script>
+    const tagButtons = document.querySelectorAll('.tag-filter');
+    const projectItems = document.querySelectorAll('.project-item');
+
+    tagButtons.forEach(button => {
+      button.addEventListener('click', () => {
+        const activeTag = (button as any).dataset.tag;
+
+        tagButtons.forEach(b => {
+          b.classList.remove('active', 'bg-[var(--accent-dim)]', 'text-accent', 'border-accent/20');
+          b.classList.add('bg-[var(--bg-card)]', 'text-[var(--text-secondary)]', 'border-[var(--border)]');
+        });
+        
+        button.classList.add('active', 'bg-[var(--accent-dim)]', 'text-accent', 'border-accent/20');
+        button.classList.remove('bg-[var(--bg-card)]', 'text-[var(--text-secondary)]', 'border-[var(--border)]');
+        
+        projectItems.forEach((item: any) => {
+          const tags = item.dataset.tags.split(',');
+          if (activeTag === 'all' || tags.includes(activeTag)) {
+            item.style.display = 'block';
+          } else {
+            item.style.display = 'none';
+          }
+        });
+      });
+    });
+  </script>
+
+  <style>
+    .tag-filter.active {
+      background-color: var(--accent-dim);
+      color: var(--accent);
+      border-color: rgba(255, 77, 0, 0.2);
+    }
+  </style>
+</BaseLayout>

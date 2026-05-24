@@ -1,0 +1,21 @@
+---
+interface Props {
+  name: string;
+  href?: string;
+}
+
+const { name, href } = Astro.props;
+---
+
+{href ? (
+  <a 
+    href={href} 
+    class="inline-block px-2 py-0.5 bg-[var(--accent-dim)] text-accent text-[10px] mono uppercase tracking-widest rounded-sm border border-[var(--accent)]/20 hover:border-[var(--accent)]/50 transition-colors"
+  >
+    {name}
+  </a>
+) : (
+  <span class="inline-block px-2 py-0.5 bg-[var(--accent-dim)] text-accent text-[10px] mono uppercase tracking-widest rounded-sm border border-[var(--accent)]/20">
+    {name}
+  </span>
+)}

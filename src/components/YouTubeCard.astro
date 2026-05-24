@@ -1,0 +1,42 @@
+---
+interface Props {
+  title: string;
+  thumbnail: string;
+  videoId: string;
+  publishedAt: string;
+  viewCount?: string;
+}
+
+const { title, thumbnail, videoId, publishedAt } = Astro.props;
+
+const formattedDate = new Date(publishedAt).toLocaleDateString('en-US', {
+  year: 'numeric',
+  month: 'short',
+  day: 'numeric',
+});
+---
+
+<a 
+  href={`https://youtube.com/watch?v=${videoId}`} 
+  target="_blank" 
+  rel="noopener noreferrer" 
+  class="group block bg-[var(--bg-card)] border border-[var(--border)] rounded-[var(--radius)] overflow-hidden transition-all hover:border-[var(--border-active)]"
+>
+  <div class="relative aspect-video overflow-hidden">
+    <img 
+      src={thumbnail} 
+      alt={title} 
+      class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+    />
+    <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+      <div class="w-12 h-12 bg-accent rounded-full flex items-center justify-center text-white pl-1 shadow-lg">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+      </div>
+    </div>
+  </div>
+  
+  <div class="p-4">
+    <h3 class="text-sm font-medium line-clamp-2 group-hover:text-accent transition-colors mb-2">{title}</h3>
+    <p class="mono text-[var(--text-muted)] text-[10px] uppercase">{formattedDate}</p>
+  </div>
+</a>
